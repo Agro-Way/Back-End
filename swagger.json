@@ -1,0 +1,218 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Agroway API",
+    "version": "1.0.0",
+    "description": "Documentação da API do Agroway",
+    "contact": {
+      "name": "Agroway Support",
+      "email": "support@agroway.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Operações de autenticação"
+    }
+  ],
+  "paths": {
+    "/api/auth/signup": {
+      "post": {
+        "summary": "signup",
+        "description": "Realiza o cadastro de um usuário",
+        "operationId": "signup",
+        "tags": ["auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nome do usuário"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email do usuário"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Senha do usuário"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["USUARIO", "PRODUTOR", "CONDUTOR"],
+                    "description": "Papel do usuário"
+                  }
+                },
+                "required": ["name", "email", "password", "role"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "login",
+        "description": "Realiza o login de um usuário",
+        "operationId": "login",
+        "tags": ["auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email do usuário"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Senha do usuário"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID do usuário"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do usuário"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email do usuário"
+          },
+          "password": {
+            "type": "string",
+            "description": "Senha do usuário"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["USUARIO", "PRODUTOR", "CONDUTOR"],
+            "description": "Papel do usuário"
+          }
+        },
+        "required": ["id", "name", "email", "role"]
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token JWT para autenticação"
+      }
+    }
+  }
+}
