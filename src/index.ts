@@ -1,13 +1,20 @@
+import cors from 'cors'
 import express from 'express'
 import rootRouter from './routes/index.js'
-import { PrismaClient } from '../generated/prisma/index.js'
 import SwaggerUi from 'swagger-ui-express'
 // @ts-ignore
 import swaggerDocuments from '../swagger.json'
+import { PrismaClient } from '../generated/prisma/index.js'
 
 const app = express()
 app.use(express.json())
 const port = 3000
+
+const allowedOrigins = ['*']
+const options: cors.CorsOptions = {
+  origin: allowedOrigins,
+}
+app.use(cors(options))
 
 export const prisma = new PrismaClient({})
 app.use('/api', rootRouter)

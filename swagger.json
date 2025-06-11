@@ -42,13 +42,23 @@
                     "type": "string",
                     "description": "Senha do usuário"
                   },
+                  "confirmPassword": {
+                    "type": "string",
+                    "description": "Confirmação da senha do usuário"
+                  },
                   "role": {
                     "type": "string",
                     "enum": ["USUARIO", "PRODUTOR", "CONDUTOR"],
                     "description": "Papel do usuário"
                   }
                 },
-                "required": ["name", "email", "password", "role"]
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "confirmPassword",
+                  "role"
+                ]
               }
             }
           }

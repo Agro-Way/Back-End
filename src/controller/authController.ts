@@ -7,7 +7,7 @@ import { SignupSchema } from '../schema/user.js'
 
 export const signup = async (req: Request, res: Response) => {
   SignupSchema.parse(req.body)
-  const { name, email, password, role } = req.body
+  const { name, email, password, confirmPassword, role } = req.body
 
   let user = await prisma.user.findFirst({ where: { email } })
   if (user) {
@@ -19,6 +19,7 @@ export const signup = async (req: Request, res: Response) => {
       name,
       email,
       password: hashSync(password, 12),
+      confirmPassword: hashSync(confirmPassword, 12),
       role,
     },
   })
