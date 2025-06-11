@@ -13,6 +13,7 @@ const port = 3000
 const allowedOrigins = ['*']
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
+  methods: 'GET,PUT,POST,DELETE',
 }
 app.use(cors(options))
 
