@@ -4,7 +4,7 @@ import rootRouter from './routes/index.js'
 import SwaggerUi from 'swagger-ui-express'
 // @ts-ignore
 import swaggerDocuments from '../swagger.json'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../generated/prisma/index.js'
 
 const app = express()
 app.use(express.json())
