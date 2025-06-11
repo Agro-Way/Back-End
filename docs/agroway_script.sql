@@ -1,184 +1,187 @@
-create database agroway default character set utf8 default collate utf8_general_ci;
-use agroway;
+CREATE DATABASE agroway 
+DEFAULT CHARACTER SET utf8mb4 
+DEFAULT COLLATE utf8mb4_general_ci;
+
+USE agroway;
 
 -- Tabela: funcao
-create table funcao (
-id int not null auto_increment primary key,
-nome varchar(100) not null unique
-)Engine=InnoDB default charset=utf8;
+CREATE TABLE funcao (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela: usuario
-create table usuario (
-id int not null auto_increment primary key,
-nome varchar(100) not null,
-email varchar(100) not null,
-password varchar(255) not null,
-status enum('ativo', 'inativo', 'pendente', 'banido') not null default 'ativo',
-id_funcao int not null default 1,
-data_criacao timestamp default current_timestamp,
-data_atualizacao timestamp default current_timestamp,
-foreign key(id_funcao) references funcao(id)
-) Engine=InnoDB default charset=utf8;
+CREATE TABLE usuario (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    status ENUM('ativo', 'inativo', 'pendente', 'banido') NOT NULL DEFAULT 'ativo',
+    id_funcao INT NOT NULL DEFAULT 1,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(id_funcao) REFERENCES funcao(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela: recuperar_senha
 CREATE TABLE recuperar_senha (
-id int not null auto_increment primary key,
-id_usuario int not null,
-token VARCHAR(255) not null,
-data_solicitacao datetime default current_timestamp,
-data_expiracao datetime,
-usado int default 0,
-foreign key (id_usuario) references usuario(id)
-)Engine=InnoDB default charset=utf8;
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    data_solicitacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    data_expiracao DATETIME,
+    usado INT DEFAULT 0,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela: categoria_produto
-create table categoria_produto (
-id int not null auto_increment primary key,
-nome varchar(100) not null unique,
-descricao text,
-data_criacao timestamp default current_timestamp,
-data_atualizacao timestamp default current_timestamp
-)Engine=InnoDB default charset=utf8;
+CREATE TABLE categoria_produto (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL UNIQUE,
+    descricao TEXT,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela: produto
-create table produto (
-id int not null auto_increment primary key,
-nome varchar(100) not null unique,
-descricao text,
-preco decimal(10, 2),
-imagem_url text,
-id_categoria int not null,
-id_produtor int not null, -- fazendo referência ao usuário com a função de produtor(tabela usuário)
-data_criacao timestamp default current_timestamp,
-data_atualizacao timestamp default current_timestamp,
-foreign key(id_categoria) references categoria_produto(id),
-foreign key(id_produtor) references usuario(id)
-)Engine=InnoDB default charset=utf8;
+CREATE TABLE produto (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL UNIQUE,
+    descricao TEXT,
+    preco DECIMAL(10, 2),
+    imagem_url TEXT,
+    id_categoria INT NOT NULL,
+    id_produtor INT NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(id_categoria) REFERENCES categoria_produto(id),
+    FOREIGN KEY(id_produtor) REFERENCES usuario(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela: estoque
-create table estoque (
-id int not null auto_increment primary key,
-id_produto int not null,
-quantidade int not null,
-data_criacao timestamp default current_timestamp,
-data_atualizacao timestamp default current_timestamp,
-foreign key(id_produto) references produto(id)
-)Engine=InnoDB default charset=utf8;
+CREATE TABLE estoque (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_produto INT NOT NULL,
+    quantidade INT NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(id_produto) REFERENCES produto(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela: pedido
-create table pedido (
-id int not null auto_increment primary key,
-id_cliente int not null, -- fazendo referência ao usuário com a função cliente
-data_pedido timestamp default current_timestamp,
-data_entrega date,
-local_entrega text,
-status_pedido enum('pendente', 'aceito', 'recusado', 'em trânsito', 'entregue') default'pendente',
-data_atualizacao timestamp default current_timestamp,
-foreign key(id_cliente) references usuario(id)
-)Engine=InnoDB default charset=utf8;
+CREATE TABLE pedido (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_entrega DATE,
+    local_entrega TEXT,
+    status_pedido ENUM('pendente', 'aceito', 'recusado', 'em trânsito', 'entregue') DEFAULT 'pendente',
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(id_cliente) REFERENCES usuario(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabela: Itens_pedido (produtos + quantidade + preço no momento)
-create table itens_pedido (
-id int not null auto_increment primary key,
-id_pedido int not null,
-id_produto int not null,
-quantidade int not null,
-preco_unitario decimal(10,2) not null,
-foreign key(id_pedido) references pedido(id),
-foreign key(id_produto) references produto(id)
-)Engine=InnoDB default charset=utf8;
+-- Tabela: itens_pedido
+CREATE TABLE itens_pedido (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_pedido INT NOT NULL,
+    id_produto INT NOT NULL,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY(id_pedido) REFERENCES pedido(id),
+    FOREIGN KEY(id_produto) REFERENCES produto(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabela: pagamento feito por clientes
-create table pagamento (
-id_pagamento int not null auto_increment primary key,
-id_pedido int not null,
-metodo_pagamento enum('cartão', 'qrcode', 'paypal', 'visa'),
-valor_pago decimal(10,2) not null,
-status_pagamento enum('pendente', 'confirmado', 'cancelado') default 'Pendente',
-data_pagamento timestamp default current_timestamp,
-foreign key (id_pedido) references pedido(id)
-)Engine=InnoDB default charset=utf8;
+-- Tabela: pagamento
+CREATE TABLE pagamento (
+    id_pagamento INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_pedido INT NOT NULL,
+    metodo_pagamento ENUM('cartão', 'qrcode', 'paypal', 'visa'),
+    valor_pago DECIMAL(10,2) NOT NULL,
+    status_pagamento ENUM('pendente', 'confirmado', 'cancelado') DEFAULT 'pendente',
+    data_pagamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_pedido) REFERENCES pedido(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabela: Avaliação
-create table avaliacao (
-id int not null auto_increment primary key,
-id_avaliador int not null, -- cliente que avaliou
-id_avaliado int not null,  -- motorista ou produtor avaliado
-id_pedido int not null,
-nota int check (nota >= 1 and nota <= 5),
-comentario text,
-data_avaliacao timestamp default current_timestamp,
-foreign key(id_avaliador) references usuario(id),
-foreign key(id_avaliado) references usuario(id),
-foreign key(id_pedido) references pedido(id)
-)Engine=InnoDB default charset=utf8;
+-- Tabela: avaliacao
+CREATE TABLE avaliacao (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_avaliador INT NOT NULL,
+    id_avaliado INT NOT NULL,
+    id_pedido INT NOT NULL,
+    nota INT CHECK (nota >= 1 AND nota <= 5),
+    comentario TEXT,
+    data_avaliacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(id_avaliador) REFERENCES usuario(id),
+    FOREIGN KEY(id_avaliado) REFERENCES usuario(id),
+    FOREIGN KEY(id_pedido) REFERENCES pedido(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabela: notificação
-create table notificacao (
-id int not null auto_increment primary key,
-id_usuario int not null,
-mensagem text not null,
-lida int default 1,
-data_envio timestamp default current_timestamp,
-foreign key(id_usuario) references usuario(id)
-)Engine=InnoDB default charset=utf8;
+-- Tabela: notificacao
+CREATE TABLE notificacao (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    mensagem TEXT NOT NULL,
+    lida INT DEFAULT 1,
+    data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(id_usuario) REFERENCES usuario(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela: entrega
-create table entrega (
-id int not null auto_increment primary key,
-id_pedido int not null,
-id_motorista int not null, -- fazendo referência ao usuário com a função motorista
-status_entrega enum('pendente', 'em trânsito', 'entregue') default 'Pendente',
-data_inicio datetime,
-data_fim datetime,
-foreign key(id_pedido) references pedido(id),
-foreign key(id_motorista) references usuario(id)
-)Engine=InnoDB default charset=utf8;
+CREATE TABLE entrega (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_pedido INT NOT NULL,
+    id_motorista INT NOT NULL,
+    status_entrega ENUM('pendente', 'em trânsito', 'entregue') DEFAULT 'pendente',
+    data_inicio DATETIME,
+    data_fim DATETIME,
+    FOREIGN KEY(id_pedido) REFERENCES pedido(id),
+    FOREIGN KEY(id_motorista) REFERENCES usuario(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabela: rota diária para motorista
-create table rota (
-id int not null auto_increment primary key,
-id_motorista int not null, -- fazendo referência ao usuário com a função motorista
-data_rota date not null,
-descricao text,
-foreign key(id_motorista) references usuario(id)
-)Engine=InnoDB default charset=utf8;
+-- Tabela: rota
+CREATE TABLE rota (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_motorista INT NOT NULL,
+    data_rota DATE NOT NULL,
+    descricao TEXT,
+    FOREIGN KEY(id_motorista) REFERENCES usuario(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabela: rota_pedido (associando pedidos às rotas)
-create table rota_pedidos (
-id int not null auto_increment primary key,
-id_rota int not null,
-id_pedido  int not null,
-unique(id_rota, id_pedido),
-foreign key(id_rota) references rota(id),
-foreign key(id_pedido) references pedido(id)
-)Engine=InnoDB default charset=utf8;
+-- Tabela: rota_pedidos
+CREATE TABLE rota_pedidos (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_rota INT NOT NULL,
+    id_pedido INT NOT NULL,
+    UNIQUE(id_rota, id_pedido),
+    FOREIGN KEY(id_rota) REFERENCES rota(id),
+    FOREIGN KEY(id_pedido) REFERENCES pedido(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-insert into usuario (nome, email, password, status, id_funcao) 
-values
-("Celson", "celson@gmail.com", "11111111", "ativo", 1), 
-("Márcio", "marcion@gmail.com", "22222222", "ativo", 2), 
-("Pedro", "pedro@gmail.com", "333", "ativo", 3);
+-- Inserções iniciais
+INSERT INTO funcao (nome) 
+VALUES
+('cliente'), 
+('motorista'), 
+('produtor');
 
-insert into funcao (nome) 
-values
-("cliente"), 
-("motorista"), 
-("produtor");
+INSERT INTO usuario (nome, email, password, status, id_funcao) 
+VALUES
+('Celson', 'celson@gmail.com', '11111111', 'ativo', 1), 
+('Márcio', 'marcion@gmail.com', '22222222', 'ativo', 2), 
+('Pedro', 'pedro@gmail.com', '333', 'ativo', 3);
 
-select * from usuario;
+-- Consulta final
+SELECT * FROM usuario;
 
-select
+SELECT
     u.id,
-    u.nome as nome_usuario,
+    u.nome AS nome_usuario,
     u.email,
     u.status,
     u.data_criacao,
     u.data_atualizacao,
-    f.nome as nome_funcao
-from
-    usuario as u
-inner join 
-    funcao as f ON u.id_funcao = f.id;
-
-
+    f.nome AS nome_funcao
+FROM
+    usuario AS u
+INNER JOIN 
+    funcao AS f ON u.id_funcao = f.id;
