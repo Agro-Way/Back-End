@@ -8,9 +8,9 @@ import { PrismaClient } from '../generated/prisma/index.js'
 
 const app = express()
 app.use(express.json())
-const port = 3000
+const PORT = 3000
 
-const allowedOrigins = ['*']
+const allowedOrigins = ['agroway-frontend.netlify.app']
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
   methods: 'GET,PUT,POST,DELETE',
@@ -21,6 +21,6 @@ export const prisma = new PrismaClient({})
 app.use('/api', rootRouter)
 app.use('/api-docs', SwaggerUi.serve, SwaggerUi.setup(swaggerDocuments))
 
-app.listen(port, () => {
-  console.log(`server running on port ${port}`)
+app.listen(PORT, () => {
+  console.log(`server running on port ${PORT}`)
 })
