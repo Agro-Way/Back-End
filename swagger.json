@@ -46,6 +46,11 @@
                     "type": "string",
                     "description": "Confirmação da senha do usuário"
                   },
+                  "status": {
+                    "type": "string",
+                    "enum": ["ATIVO", "INATIVO", "PENDENTE", "BANIDO"],
+                    "description": "Status do usuario"
+                  },
                   "role": {
                     "type": "string",
                     "enum": ["USUARIO", "PRODUTOR", "CONDUTOR"],
@@ -57,6 +62,7 @@
                   "email",
                   "password",
                   "confirmPassword",
+                  "status",
                   "role"
                 ]
               }
@@ -207,13 +213,30 @@
             "type": "string",
             "description": "Senha do usuário"
           },
+          "confirmPassword": {
+            "type": "string",
+            "description": "Confirmação da senha do usuário"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ATIVO", "INATIVO", "PENDENTE", "BANIDO"],
+            "description": "Status do usuario"
+          },
           "role": {
             "type": "string",
             "enum": ["USUARIO", "PRODUTOR", "CONDUTOR"],
             "description": "Papel do usuário"
           }
         },
-        "required": ["id", "name", "email", "role"]
+        "required": [
+          "id",
+          "name",
+          "email",
+          "password",
+          "confirmPassword",
+          "status",
+          "role"
+        ]
       }
     },
     "securitySchemes": {

@@ -4,26 +4,35 @@ import { JWT_SECRET } from '../secrets.js'
 import { compareSync, hashSync } from 'bcrypt'
 import type { Request, Response } from 'express'
 import { SignupSchema } from '../schema/user.js'
+import { CreateUser } from '../models/users/services/createUser/createUser.js'
 
 export const signup = async (req: Request, res: Response) => {
   SignupSchema.parse(req.body)
-  const { name, email, password, confirmPassword, role } = req.body
+  const {
+    name,
+    email,
+    password,
+    confirmPassword,
+    status,
+    role,
+    created_At,
+    updated_At,
+  } = req.body
 
-  let user = await prisma.user.findFirst({ where: { email } })
-  if (user) {
-    throw Error('Usuário já cadastrado')
-  }
+  const userCreated = new CreateUser()
 
-  user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: hashSync(password, 12),
-      confirmPassword: hashSync(confirmPassword, 12),
-      role,
-    },
+  const result = await userCreated.execute({
+    name,
+    email,
+    password,
+    confirmPassword,
+    status,
+    role,
+    created_At,
+    updated_At,
   })
-  res.json(user)
+
+  res.status(201).json(result)
 }
 
 export const login = async (req: Request, res: Response) => {

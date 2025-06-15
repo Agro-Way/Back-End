@@ -20,7 +20,12 @@ model User {
   email String @unique
   password String
   confirmPassword String
+  status Status @default(PENDENTE)
   role Role @default(USUARIO)
+  created_At DateTime @default(now())
+  updated_At DateTime @updatedAt
+  driverId String
+  driver Driver @relation(fields: [driverId], references: [id])
 
   @@map("users")
 }
@@ -29,4 +34,19 @@ enum Role {
   USUARIO
   PRODUTOR
   CONDUTOR
+}
+
+enum Status {
+  ATIVO
+  INATIVO
+  PENDENTE
+  BANIDO
+}
+
+model Driver {
+  id String @id @default(uuid())
+  driver_license String
+  age Int
+
+  User User[]
 }
