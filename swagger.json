@@ -38,6 +38,11 @@
                     "format": "email",
                     "description": "Email do usuário"
                   },
+                  "telefone": {
+                    "type": "string",
+                    "format": "telefone",
+                    "description": "O seu telefone"
+                  },
                   "password": {
                     "type": "string",
                     "description": "Senha do usuário"
@@ -60,6 +65,7 @@
                 "required": [
                   "name",
                   "email",
+                  "telefone",
                   "password",
                   "confirmPassword",
                   "status",
@@ -209,6 +215,11 @@
             "format": "email",
             "description": "Email do usuário"
           },
+          "telefone": {
+            "type": "string",
+            "format": "telefone",
+            "description": "O seu telefone"
+          },
           "password": {
             "type": "string",
             "description": "Senha do usuário"
@@ -232,6 +243,7 @@
           "id",
           "name",
           "email",
+          "telefone",
           "password",
           "confirmPassword",
           "status",

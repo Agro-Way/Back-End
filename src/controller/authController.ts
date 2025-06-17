@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken'
+import { compareSync } from 'bcrypt'
 import { prisma } from '../index.js'
 import { JWT_SECRET } from '../secrets.js'
-import { compareSync, hashSync } from 'bcrypt'
-import type { Request, Response } from 'express'
 import { SignupSchema } from '../schema/user.js'
+import type { Request, Response } from 'express'
 import { CreateUser } from '../models/users/services/createUser/createUser.js'
 
 export const signup = async (req: Request, res: Response) => {
@@ -11,6 +11,7 @@ export const signup = async (req: Request, res: Response) => {
   const {
     name,
     email,
+    telefone,
     password,
     confirmPassword,
     status,
@@ -24,6 +25,7 @@ export const signup = async (req: Request, res: Response) => {
   const result = await userCreated.execute({
     name,
     email,
+    telefone,
     password,
     confirmPassword,
     status,

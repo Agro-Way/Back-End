@@ -7,6 +7,7 @@ export class CreateUser {
   async execute({
     name,
     email,
+    telefone,
     password,
     confirmPassword,
     status,
@@ -20,13 +21,15 @@ export class CreateUser {
       },
     })
 
-    if (userExists) {
-    }
+    // if (userExists) {
+    //   throw new AppError('Este usuario já existe!', 400)
+    // }
 
     const user = await prisma.user.create({
       data: {
         name,
         email,
+        telefone,
         password: hashSync(password, 12),
         confirmPassword: hashSync(confirmPassword, 12),
         status,

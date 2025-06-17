@@ -4,6 +4,7 @@ import rootRouter from './routes/index.js'
 import SwaggerUi from 'swagger-ui-express'
 // @ts-ignore
 import swaggerDocuments from '../swagger.json'
+import { ErrorMiddleware } from './middleware/errors.js'
 import { PrismaClient } from '../generated/prisma/index.js'
 
 const app = express()
@@ -20,6 +21,7 @@ app.use(cors(options))
 export const prisma = new PrismaClient({})
 app.use('/api', rootRouter)
 app.use('/api-docs', SwaggerUi.serve, SwaggerUi.setup(swaggerDocuments))
+// app.use(ErrorMiddleware)
 
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)
