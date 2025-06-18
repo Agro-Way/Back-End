@@ -28,3 +28,59 @@ export const getListUsers = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erro ao buscar usuarios' })
   }
 }
+
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+    const user = await prisma.user.findUnique({
+      where: { id },
+    })
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' })
+    }
+
+    res.json(user)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Erro ao buscar usuário' })
+  }
+}
+
+export const createDriver = async (req: Request, res: Response) => {
+  const userId = String(req.params.id)
+  const { driver_license, age } = req.body
+
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+    })
+
+    if (!existingUser) {
+      return res.status(404).json({ error: 'Usuário não encontrado' })
+    }
+
+    const existingDriver = await prisma.driver.findFirst({
+      where: { driver_license },
+    })
+
+    if (existingDriver) {
+      return res
+        .status(400)
+        .json({ error: 'Condutor com esta carta de condução já existe' })
+    }
+
+    const driver = await prisma.driver.create({
+      data: {
+        driver_license,
+        age,
+        user: { connect: { id: userId } },
+      },
+    })
+
+    res.status(201).json({ driver })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Erro ao criar condutor' })
+  }
+}
