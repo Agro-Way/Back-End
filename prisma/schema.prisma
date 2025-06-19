@@ -30,6 +30,8 @@ model Driver {
   age            Int
   userId         String @unique
   user           User   @relation(fields: [userId], references: [id])
+
+  Car Car[]
 }
 
 enum Role {
@@ -43,4 +45,16 @@ enum Status {
   INATIVO
   PENDENTE
   BANIDO
+}
+
+model Car{
+  id String @id @default(uuid())
+  model String
+  brand String
+  plate String @unique
+  image_url String
+  driverId String @unique
+  driver Driver @relation(fields: [driverId], references: [id])
+  created_At DateTime @default(now())
+  updated_At DateTime @updatedAt
 }
