@@ -1,12 +1,14 @@
 import dotenv from 'dotenv'
 import { S3Client } from '@aws-sdk/client-s3'
+import { env } from '../env.js'
 
 dotenv.config()
 
-export const s3 = new S3Client({
-  region: process.env.AWS_REGION || 'us-east-1',
+export const r2 = new S3Client({
+  region: 'auto',
+  endpoint: env.CLOUDFLARE_ENDPOINT,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    accessKeyId: env.CLOUDFLARE_ACCESS_KEY_ID,
+    secretAccessKey: env.CLOUDFLARE_SECRET_ACCESS_KEY,
   },
 })

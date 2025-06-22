@@ -9,17 +9,18 @@ datasource db {
 }
 
 model User {
-  id              String   @id @default(uuid())
+  id              String    @id @default(uuid())
   name            String
-  email           String   @unique
+  email           String    @unique
   telefone        String
   password        String
   confirmPassword String
-  status          Status   @default(PENDENTE)
-  role            Role     @default(USUARIO)
-  created_At      DateTime @default(now())
-  updated_At      DateTime @updatedAt
+  status          Status    @default(PENDENTE)
+  role            Role      @default(USUARIO)
+  created_At      DateTime  @default(now())
+  updated_At      DateTime  @updatedAt
   driver          Driver?
+  Product         Product[]
 
   @@map("users")
 }
@@ -47,14 +48,40 @@ enum Status {
   BANIDO
 }
 
-model Car{
-  id String @id @default(uuid())
-  model String
-  brand String
-  plate String @unique
-  image_url String
-  driverId String @unique
-  driver Driver @relation(fields: [driverId], references: [id])
+model Car {
+  id         String   @id @default(uuid())
+  model      String
+  brand      String
+  plate      String   @unique
+  image_url  String
+  driverId   String   @unique
+  driver     Driver   @relation(fields: [driverId], references: [id])
   created_At DateTime @default(now())
   updated_At DateTime @updatedAt
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Decimal
+  quantity    Int
+  image_url   String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  created_At  DateTime @default(now())
+  updated_At  DateTime @updatedAt
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  image_url   String
+  created_At  DateTime @default(now())
+  updated_At  DateTime @updatedAt
+
+  Product Product[]
 }
