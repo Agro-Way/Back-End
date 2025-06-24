@@ -1,28 +1,32 @@
-import { env } from '../env.js'
+import dotenv from 'dotenv'
 import { r2 } from '../config/aws.js'
 import type { Request, Response } from 'express'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { uuid } from 'zod/v4'
+import { fileUploadSchema } from '../schema/fileUploadSchema.js'
+import { randomUUID } from 'node:crypto'
+
+dotenv.config()
 
 export const uploadImage = async (req: Request, res: Response) => {
   try {
-    const filename = `${uuid()}.${req.body.key.split('.').pop()}`
+    const { fileName, contentType } = fileUploadSchema.parse(req.body)
+    const fileKey = randomUUID().concat('-').concat(fileName)
     const signedurl = await getSignedUrl(
       r2,
       new PutObjectCommand({
-        Bucket: env.R2_BUCKET_NAME,
-        Key: filename,
-        ContentType: req.body.contentType,
+        Bucket: process.env.R2_BUCKET_NAME,
+        Key: fileKey,
+        ContentType: contentType,
       })
     )
 
     res.status(200).json({
       signedurl,
-      fileUrl: `https://${env.R2_BUCKET_NAME}.${env.CLOUDFLARE_ENDPOINT}/${filename}`,
+      fileUrl: `https://${process.env.R2_BUCKET_NAME}.${process.env.CLOUDFLARE_ENDPOINT}/${fileKey}`,
     })
   } catch (error) {
-    console.error('Error generating upload URL:', error)
+    console.log('Error generating upload URL:', error)
     res.status(500).json({ error: 'Erro ao gerar URL de upload' })
   }
 }

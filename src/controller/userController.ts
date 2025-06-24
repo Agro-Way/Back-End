@@ -1,7 +1,10 @@
-import type { Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 import { prisma } from '../index.js'
+import { UserNotFoundException } from '../exceptions/not-found.js'
+import { ErrorCode } from '../exceptions/root.js'
+import { BadRequestException } from '../exceptions/bad-request.js'
 
-export const getListUsers = async (req: Request, res: Response) => {
+export const getListUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const page = Number.parseInt(req.query.page as string) || 1
     const limit = Number.parseInt(req.query.limit as string) || 10
@@ -25,11 +28,11 @@ export const getListUsers = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Erro ao buscar usuarios' })
+    next(new BadRequestException('Erro ao buscar usuários', ErrorCode.BAD_REQUEST))
   }
 }
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
     const user = await prisma.user.findUnique({
@@ -37,17 +40,36 @@ export const getUserById = async (req: Request, res: Response) => {
     })
 
     if (!user) {
-      return res.status(404).json({ error: 'Usuário não encontrado' })
+      return next(new UserNotFoundException('Usuário não encontrado', ErrorCode.USER_NOT_FOUND))
     }
 
     res.json(user)
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Erro ao buscar usuário' })
+    next(new BadRequestException('Erro ao buscar usuário', ErrorCode.BAD_REQUEST))
   }
 }
 
-export const createDriver = async (req: Request, res: Response) => {
+export const getDriverById = async (req: Request, res: Response, next: NextFunction) => {
+  const driverId = req.params.id
+
+  try {
+    const driver = await prisma.driver.findUnique({
+      where: { id: driverId },
+    })
+
+    if (!driver) {
+      return next(new UserNotFoundException('Condutor não encontrado', ErrorCode.USER_NOT_FOUND))
+    }
+
+    res.json(driver)
+  } catch (error) {
+    console.error(error)
+    next(new UserNotFoundException('Erro ao buscar condutor', ErrorCode.USER_NOT_FOUND))
+  }
+}
+
+export const createDriver = async (req: Request, res: Response, next: NextFunction) => {
   const userId = String(req.params.id)
   const { driver_license, age } = req.body
 
@@ -57,7 +79,7 @@ export const createDriver = async (req: Request, res: Response) => {
     })
 
     if (!existingUser) {
-      return res.status(404).json({ error: 'Usuário não encontrado' })
+      return next(new UserNotFoundException('Usuário não encontrado', ErrorCode.USER_NOT_FOUND))
     }
 
     const existingDriver = await prisma.driver.findFirst({
@@ -65,9 +87,8 @@ export const createDriver = async (req: Request, res: Response) => {
     })
 
     if (existingDriver) {
-      return res
-        .status(400)
-        .json({ error: 'Condutor com esta carta de condução já existe' })
+      return next(new BadRequestException('Condutor com esta carta de condução já existe', ErrorCode.BAD_REQUEST))
+
     }
 
     const driver = await prisma.driver.create({
@@ -81,6 +102,6 @@ export const createDriver = async (req: Request, res: Response) => {
     res.status(201).json({ driver })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Erro ao criar condutor' })
+    next(new BadRequestException('Erro ao criar condutor', ErrorCode.BAD_REQUEST))  
   }
 }

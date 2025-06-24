@@ -6,11 +6,10 @@ export const driverMiddleware = async (
   next: NextFunction
 ) => {
   const user = req.user
-  // if(user?.role === "CONDUTOR"){
-  //     next()
-  // } else {
-  //     res.status(403).json({})
-  // }
 
-  user?.role === 'CONDUTOR' ? next() : res.status(403).json({})
+  if (user?.role === 'CONDUTOR') {
+    next()
+  } else {
+    res.status(403).json({})
+  }
 }

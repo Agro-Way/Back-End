@@ -1,10 +1,8 @@
 export class HttpException extends Error {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   statusCode: number
   errors: ErrorCode
   message: string
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  errorCode: any
+  errorCode: number
 
   constructor(
     statusCode: number,
@@ -22,7 +20,10 @@ export class HttpException extends Error {
 
 export enum ErrorCode {
   USER_NOT_FOUND = 404,
-  USER_ALREADY_EXISTS = 400,
-  INVALID_CREDENTIALS = 400,
-  UNPROCESSANLE_ENTITY = 1001,
+  USER_ALREADY_EXISTS = 409,
+  INVALID_CREDENTIALS = 401,
+  UNPROCESSABLE_ENTITY = 422,
+  INTERNAL_SERVER_ERROR = 500,
+  UNAUTHORIZED = 401,
+  BAD_REQUEST = 400,
 }

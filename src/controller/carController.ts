@@ -19,3 +19,32 @@ export const getCarById = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }
+
+export const createCar = async (req: Request, res: Response) => {
+  const { brand, model, plate, image_url, driverId } = req.body
+  try {
+    const existingCar = await prisma.car.findFirst({
+      where: { plate },
+    })
+
+    if (existingCar) {
+      return res
+        .status(409)
+        .json({ error: 'Já existe um carro com esta matricula' })
+    }
+
+    const car = await prisma.car.create({
+      data: {
+        brand,
+        model,
+        plate,
+        image_url,
+        driver: { connect: { id: driverId } },
+      },
+    })
+    res.status(201).json(car)
+  } catch (error) {
+    console.error('Error creating car:', error)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+}
