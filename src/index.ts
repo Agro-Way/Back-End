@@ -9,7 +9,7 @@ import { PrismaClient } from '../generated/prisma/index.js'
 
 const app = express()
 app.use(express.json())
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 const allowedOrigins = ['https://agroway-frontend.netlify.app']
 const options: cors.CorsOptions = {

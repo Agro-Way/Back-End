@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
-    "vercel-build": "npx prisma migrate deploy"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
