@@ -3,20 +3,13 @@ import { createCar } from '../controller/carController.js'
 import type { Request, Response, NextFunction } from 'express'
 import { driverMiddleware } from '../middleware/driverMiddleware.js'
 import { authMiddleware } from '../middleware/auth.js'
+import { errorHandler } from '../error-hendler.js'
 
 const carRoutes = Router()
 carRoutes.post(
   '/:id',
-  // authMiddleware,
-  driverMiddleware,
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      await createCar(req, res)
-      return
-    } catch (err) {
-      next(err)
-    }
-  }
+  [authMiddleware, driverMiddleware],
+  errorHandler(createCar)
 )
 
 export default carRoutes

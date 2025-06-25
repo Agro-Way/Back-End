@@ -21,7 +21,7 @@ app.use(cors(options))
 export const prisma = new PrismaClient({})
 app.use('/api', rootRouter)
 app.use('/api-docs', SwaggerUi.serve, SwaggerUi.setup(swaggerDocuments))
-// app.use(ErrorMiddleware)
+app.use(ErrorMiddleware)
 
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)

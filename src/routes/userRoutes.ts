@@ -6,12 +6,31 @@ import {
   getUserById,
 } from '../controller/userController.js'
 import { errorHandler } from '../error-hendler.js'
+import { authMiddleware } from '../middleware/auth.js'
+import { producerMiddleware } from '../middleware/producerMiddleware.js'
+import { driverMiddleware } from '../middleware/driverMiddleware.js'
 
 const userRoutes = Router()
 
-userRoutes.get('/', getListUsers)
-userRoutes.get('/:id', errorHandler(getUserById))
-userRoutes.get('/:id/driver', errorHandler(getDriverById))
-userRoutes.post('/:id/driver', errorHandler(createDriver))
+userRoutes.get(
+  '/',
+  [authMiddleware, producerMiddleware],
+  errorHandler(getListUsers)
+)
+userRoutes.get(
+  '/:id',
+  [authMiddleware, producerMiddleware],
+  errorHandler(getUserById)
+)
+userRoutes.get(
+  '/:id/driver',
+  [authMiddleware, driverMiddleware],
+  errorHandler(getDriverById)
+)
+userRoutes.post(
+  '/:id/driver',
+  [authMiddleware, driverMiddleware],
+  errorHandler(createDriver)
+)
 
 export default userRoutes

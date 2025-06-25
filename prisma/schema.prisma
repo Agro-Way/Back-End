@@ -53,7 +53,6 @@ model Car {
   model      String
   brand      String
   plate      String   @unique
-  image_url  String
   driverId   String   @unique
   driver     Driver   @relation(fields: [driverId], references: [id])
   created_At DateTime @default(now())
