@@ -11,7 +11,7 @@ export const uploadImage = async (req: Request, res: Response) => {
   try {
     const filename = `${uuid()}-${req.file?.originalname}`
     const command = new PutObjectCommand({
-      Bucket: process.env.CLOUDFLARE_BUCKET_NAME,
+      Bucket: process.env.R2_BUCKET_NAME,
       Key: filename,
       ContentType: req.file?.mimetype,
     })

@@ -7,7 +7,7 @@ import { createProduct, getProducts } from '../controller/productController.js'
 const productRoute = Router()
 
 productRoute.post(
-  '/',
+  '/:id/:categoryId',
   [authMiddleware, producerMiddleware],
   errorHandler(createProduct)
 )
