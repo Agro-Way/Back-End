@@ -1,3 +1,7 @@
-import multer from "multer";
+import multer from 'multer'
 
 const storage = multer.memoryStorage()
+
+export const uploadMiddleware = multer({
+  storage,
+})

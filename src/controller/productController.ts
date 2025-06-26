@@ -13,6 +13,8 @@ export const createProduct = async (
   try {
     const { name, price, description, quantity, imagekey, userId, categoryId } =
       req.body
+
+    const image = req.file
     productSchema.parse(req.body)
 
     const user_Id = String(req.params.id)
@@ -25,6 +27,12 @@ export const createProduct = async (
     const category = await prisma.category.findUnique({
       where: { id: categoryId },
     })
+
+    if(!image) {
+      return next(new BadRequestException('Imagem não enviada', ErrorCode.BAD_REQUEST))
+    }
+
+    const imagemUrl = 
 
     if (!existingUser) {
       return next(
