@@ -11,7 +11,7 @@ const app = express()
 app.use(express.json())
 const PORT = process.env.PORT || 3000
 
-const allowedOrigins = ['https://agroway-frontend.netlify.app']
+const allowedOrigins = ['*']
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
   methods: 'GET,PUT,POST,DELETE',
