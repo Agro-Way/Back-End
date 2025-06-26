@@ -11,9 +11,9 @@ const app = express()
 app.use(express.json())
 const PORT = process.env.PORT || 3000
 
-const allowedOrigins = ['*']
 const options: cors.CorsOptions = {
-  origin: allowedOrigins,
+  origin: ['*'],
+  credentials: true,
   methods: 'GET,PUT,POST,DELETE',
 }
 app.use(cors(options))

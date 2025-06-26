@@ -5,48 +5,66 @@ import { InternalServerError } from '../exceptions/internal-server-error.js'
 import { ErrorCode } from '../exceptions/root.js'
 import { BadRequestException } from '../exceptions/bad-request.js'
 
-export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
+export const createProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { name, price, description, quantity, imagekey } =
-    req.body
+    const { name, price, description, quantity, imagekey, userId, categoryId } =
+      req.body
+    productSchema.parse(req.body)
 
-    const userId = String(req.params.id)
-    const categoryId = String(req.params.id)
-  productSchema.parse(req.body)
+    const user_Id = String(req.params.id)
+    const category_Id = String(req.params.id)
 
-  const existingUser = await prisma.user.findUnique({
-    where: { id: userId },
-  })
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+    })
 
-  const category = await prisma.category.findUnique({
-    where: { id: categoryId },
-  })
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+    })
 
-  if (!existingUser) {
-    return next(new BadRequestException(
-      'Usuário não encontrado', ErrorCode.BAD_REQUEST))
-  }
+    if (!existingUser) {
+      return next(
+        new BadRequestException('Usuário não encontrado', ErrorCode.BAD_REQUEST)
+      )
+    }
 
-  if( !category) {
-    return next(new BadRequestException('Categoria não encontrada', ErrorCode.BAD_REQUEST))
-  }
+    if (!category) {
+      return next(
+        new BadRequestException(
+          'Categoria não encontrada',
+          ErrorCode.BAD_REQUEST
+        )
+      )
+    }
 
-  const product = await prisma.product.create({
-    data: {
-      name,
-      price,
-      description,
-      quantity,
-      imagekey,
-      userId: userId,
-      categoryId: categoryId
-    },
-  })
-  res.status(201).json(product)
+    const product = await prisma.product.create({
+      data: {
+        name,
+        price,
+        description,
+        quantity,
+        imagekey,
+        userId: user_Id,
+        categoryId: category_Id,
+      },
+      include: {
+        user: true,
+        category: true,
+      },
+    })
+    res.status(201).json(product)
   } catch (error) {
     console.error('Erro ao criar produto:', error)
-    res.status(500).json({ error: 'Erro ao criar produto' })
-    
+    next(
+      new InternalServerError(
+        'Erro ao criar produto',
+        ErrorCode.INTERNAL_SERVER_ERROR
+      )
+    )
   }
 }
 

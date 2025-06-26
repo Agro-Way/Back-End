@@ -9,10 +9,11 @@ dotenv.config()
 
 export const uploadImage = async (req: Request, res: Response) => {
   try {
-    const filename = `${uuid()}-${req.file?.originalname}`
+    const filename = `produtos/${Date.now()}-${req.file?.originalname}`
     const command = new PutObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
       Key: filename,
+      Body: req.file?.buffer,
       ContentType: req.file?.mimetype,
     })
 
