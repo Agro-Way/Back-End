@@ -1,6 +1,6 @@
 import { BadRequestException } from '../exceptions/bad-request.js'
 import { ErrorCode } from '../exceptions/root.js'
-import { prisma } from '../index.js'
+import { prisma } from '../utils/prisma.js'
 import type { Request, Response, NextFunction } from 'express'
 
 export const getCarById = async (

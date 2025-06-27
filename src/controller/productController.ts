@@ -1,9 +1,10 @@
 import type { Request, Response, NextFunction } from 'express'
-import { prisma } from '../index.js'
+import { prisma } from '../utils/prisma.js'
 import { productSchema } from '../schema/productSchema.js'
 import { InternalServerError } from '../exceptions/internal-server-error.js'
 import { ErrorCode } from '../exceptions/root.js'
 import { BadRequestException } from '../exceptions/bad-request.js'
+import { Role } from '../../generated/prisma/index.js'
 
 export const createProduct = async (
   req: Request,
@@ -11,39 +12,18 @@ export const createProduct = async (
   next: NextFunction
 ) => {
   try {
-    const { name, price, description, quantity, imagekey, userId, categoryId } =
+    const { name, price, description, quantity, producerId, categoryId } =
       req.body
 
-    const image = req.file
-    productSchema.parse(req.body)
-
-    const user_Id = String(req.params.id)
-    const category_Id = String(req.params.id)
-
-    const existingUser = await prisma.user.findUnique({
-      where: { id: userId },
+    const producer = await prisma.user.findUnique({
+      where: { id: producerId },
+      select: { role: true },
     })
 
-    const category = await prisma.category.findUnique({
-      where: { id: categoryId },
-    })
-
-    if(!image) {
-      return next(new BadRequestException('Imagem não enviada', ErrorCode.BAD_REQUEST))
-    }
-
-    const imagemUrl = 
-
-    if (!existingUser) {
-      return next(
-        new BadRequestException('Usuário não encontrado', ErrorCode.BAD_REQUEST)
-      )
-    }
-
-    if (!category) {
+    if (!producer || producer.role !== Role.PRODUTOR) {
       return next(
         new BadRequestException(
-          'Categoria não encontrada',
+          'Usuário não é um produtor válido',
           ErrorCode.BAD_REQUEST
         )
       )
@@ -52,16 +32,17 @@ export const createProduct = async (
     const product = await prisma.product.create({
       data: {
         name,
-        price,
+        price: Number.parseFloat(price),
         description,
         quantity,
-        imagekey,
-        userId: user_Id,
-        categoryId: category_Id,
-      },
-      include: {
-        user: true,
-        category: true,
+        imageUrl: '', // Provide a default or actual image URL
+        imagekey: '', // Provide a default or actual image key
+        producer: {
+          connect: { id: producerId },
+        },
+        category: {
+          connect: { id: categoryId },
+        },
       },
     })
     res.status(201).json(product)

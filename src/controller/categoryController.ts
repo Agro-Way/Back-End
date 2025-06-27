@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express'
 import { ErrorCode } from '../exceptions/root.js'
-import { prisma } from '../index.js'
+import { prisma } from '../utils/prisma.js'
 import { categorySchema } from '../schema/categorySchema.js'
 import { InternalServerError } from '../exceptions/internal-server-error.js'
 

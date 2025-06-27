@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '../secrets.js'
-import { prisma } from '../index.js'
+import { prisma } from '../utils/prisma.js'
 import { UnauthorizedException } from '../exceptions/unauthorized.js'
 import { ErrorCode } from '../exceptions/root.js'
 import { UserNotFoundException } from '../exceptions/not-found.js'

@@ -7,7 +7,7 @@ import { producerMiddleware } from '../middleware/producerMiddleware.js'
 const uploadImageRoute = Router()
 
 uploadImageRoute.post(
-  '/generate-upload-url',
+  ':id/generate-upload-url',
   [authMiddleware, producerMiddleware],
   errorHandler(uploadImage)
 )

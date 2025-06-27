@@ -1,10 +1,14 @@
 import type { NextFunction, Request, Response } from 'express'
-import { prisma } from '../index.js'
+import { prisma } from '../utils/prisma.js'
 import { UserNotFoundException } from '../exceptions/not-found.js'
 import { ErrorCode } from '../exceptions/root.js'
 import { BadRequestException } from '../exceptions/bad-request.js'
 
-export const getListUsers = async (req: Request, res: Response, next: NextFunction) => {
+export const getListUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const page = Number.parseInt(req.query.page as string) || 1
     const limit = Number.parseInt(req.query.limit as string) || 10
@@ -28,11 +32,17 @@ export const getListUsers = async (req: Request, res: Response, next: NextFuncti
     })
   } catch (error) {
     console.error(error)
-    next(new BadRequestException('Erro ao buscar usuários', ErrorCode.BAD_REQUEST))
+    next(
+      new BadRequestException('Erro ao buscar usuários', ErrorCode.BAD_REQUEST)
+    )
   }
 }
 
-export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params
     const user = await prisma.user.findUnique({
@@ -40,17 +50,28 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
     })
 
     if (!user) {
-      return next(new UserNotFoundException('Usuário não encontrado', ErrorCode.USER_NOT_FOUND))
+      return next(
+        new UserNotFoundException(
+          'Usuário não encontrado',
+          ErrorCode.USER_NOT_FOUND
+        )
+      )
     }
 
     res.json(user)
   } catch (error) {
     console.error(error)
-    next(new BadRequestException('Erro ao buscar usuário', ErrorCode.BAD_REQUEST))
+    next(
+      new BadRequestException('Erro ao buscar usuário', ErrorCode.BAD_REQUEST)
+    )
   }
 }
 
-export const getDriverById = async (req: Request, res: Response, next: NextFunction) => {
+export const getDriverById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const driverId = req.params.id
 
   try {
@@ -59,17 +80,31 @@ export const getDriverById = async (req: Request, res: Response, next: NextFunct
     })
 
     if (!driver) {
-      return next(new UserNotFoundException('Condutor não encontrado', ErrorCode.USER_NOT_FOUND))
+      return next(
+        new UserNotFoundException(
+          'Condutor não encontrado',
+          ErrorCode.USER_NOT_FOUND
+        )
+      )
     }
 
     res.json(driver)
   } catch (error) {
     console.error(error)
-    next(new UserNotFoundException('Erro ao buscar condutor', ErrorCode.USER_NOT_FOUND))
+    next(
+      new UserNotFoundException(
+        'Erro ao buscar condutor',
+        ErrorCode.USER_NOT_FOUND
+      )
+    )
   }
 }
 
-export const createDriver = async (req: Request, res: Response, next: NextFunction) => {
+export const createDriver = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const userId = String(req.params.id)
   const { driver_license, age } = req.body
 
@@ -79,7 +114,12 @@ export const createDriver = async (req: Request, res: Response, next: NextFuncti
     })
 
     if (!existingUser) {
-      return next(new UserNotFoundException('Usuário não encontrado', ErrorCode.USER_NOT_FOUND))
+      return next(
+        new UserNotFoundException(
+          'Usuário não encontrado',
+          ErrorCode.USER_NOT_FOUND
+        )
+      )
     }
 
     const existingDriver = await prisma.driver.findFirst({
@@ -87,8 +127,12 @@ export const createDriver = async (req: Request, res: Response, next: NextFuncti
     })
 
     if (existingDriver) {
-      return next(new BadRequestException('Condutor com esta carta de condução já existe', ErrorCode.BAD_REQUEST))
-
+      return next(
+        new BadRequestException(
+          'Condutor com esta carta de condução já existe',
+          ErrorCode.BAD_REQUEST
+        )
+      )
     }
 
     const driver = await prisma.driver.create({
@@ -102,6 +146,8 @@ export const createDriver = async (req: Request, res: Response, next: NextFuncti
     res.status(201).json({ driver })
   } catch (error) {
     console.error(error)
-    next(new BadRequestException('Erro ao criar condutor', ErrorCode.BAD_REQUEST))  
+    next(
+      new BadRequestException('Erro ao criar condutor', ErrorCode.BAD_REQUEST)
+    )
   }
 }

@@ -1,29 +1,78 @@
 import dotenv from 'dotenv'
-import { r2 } from '../config/aws.js'
-import type { Request, Response } from 'express'
+import { r2 } from '../config/r2.js'
+import type { Request, Response, NextFunction } from 'express'
 import { v4 as uuid } from 'uuid'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { BadRequestException } from '../exceptions/bad-request.js'
+import { ErrorCode } from '../exceptions/root.js'
+import { InternalServerError } from '../exceptions/internal-server-error.js'
+import { prisma } from '../utils/prisma.js'
+import {
+  deleteObjectFromR2,
+  generatePreSignedUrl,
+} from '../service/cloudflareService.js'
 
 dotenv.config()
 
-export const uploadImage = async (req: Request, res: Response) => {
+export const uploadImage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const filename = `produtos/${Date.now()}-${req.file?.originalname}`
-    const command = new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME,
-      Key: filename,
-      Body: req.file?.buffer,
-      ContentType: req.file?.mimetype,
+    const { productId } = req.params
+    const { fileName, contentType } = req.body
+    if (!fileName || !contentType) {
+      return next(
+        new BadRequestException(
+          'Nome do arquivo e tipo de conteúdo são obrigatórios.',
+          ErrorCode.BAD_REQUEST
+        )
+      )
+    }
+
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
     })
 
-    const uploadUrl = await getSignedUrl(r2, command, {
-      expiresIn: 3600, // URL válido por 1 hora
-    })
+    if (!product) {
+      return next(
+        new BadRequestException(
+          'Produto não encontrado.',
+          ErrorCode.BAD_REQUEST
+        )
+      )
+    }
 
-    res.status(200).json({ uploadUrl })
+    if (product.imagekey) {
+      await deleteObjectFromR2(product.imagekey)
+    }
+
+    const { uploadUrl, key, publicUrl } = await generatePreSignedUrl(
+      fileName,
+      contentType
+    )
+
+    await prisma.product.update({
+      where: { id: productId },
+      data: {
+        imageUrl: publicUrl,
+        imagekey: key,
+      },
+    })
+    res.status(200).json({
+      uploadUrl,
+      key,
+      publicUrl,
+    })
   } catch (error) {
-    console.log('Error generating upload URL:', error)
-    res.status(500).json({ error: 'Erro ao gerar URL de upload' })
+    console.error('Erro ao fazer upload da imagem:', error)
+    next(
+      new InternalServerError(
+        'Erro ao fazer upload da imagem',
+        ErrorCode.INTERNAL_SERVER_ERROR
+      )
+    )
   }
 }

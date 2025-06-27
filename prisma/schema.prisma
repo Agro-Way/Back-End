@@ -65,9 +65,10 @@ model Product {
   description String
   price       Decimal
   quantity    Int
+  imageUrl    String
   imagekey    String
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  producerId  String
+  producer    User     @relation(fields: [producerId], references: [id])
   created_At  DateTime @default(now())
   updated_At  DateTime @updatedAt
   categoryId  String

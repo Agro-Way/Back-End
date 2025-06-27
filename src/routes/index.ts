@@ -13,7 +13,7 @@ rootRouter.use('/user', userRoutes)
 rootRouter.use('/users', userRoutes)
 rootRouter.use('/cars', carRoutes)
 rootRouter.use('/categories', categoryRoute)
-rootRouter.use('/upload', uploadImageRoute)
+rootRouter.use('/products', uploadImageRoute)
 rootRouter.use('/products', productRoute)
 
 export default rootRouter
