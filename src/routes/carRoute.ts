@@ -6,10 +6,6 @@ import { authMiddleware } from '../middleware/auth.js'
 import { errorHandler } from '../error-hendler.js'
 
 const carRoutes = Router()
-carRoutes.post(
-  '/:id',
-  [authMiddleware, driverMiddleware],
-  errorHandler(createCar)
-)
+carRoutes.post('/', [authMiddleware, driverMiddleware], errorHandler(createCar))
 
 export default carRoutes

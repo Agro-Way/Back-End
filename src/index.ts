@@ -10,12 +10,7 @@ const app = express()
 app.use(express.json())
 const PORT = process.env.PORT || 3000
 
-const options: cors.CorsOptions = {
-  origin: ['*'],
-  credentials: true,
-  methods: 'GET,PUT,POST,DELETE',
-}
-app.use(cors(options))
+app.use(cors())
 
 app.use('/api', rootRouter)
 app.use('/api-docs', SwaggerUi.serve, SwaggerUi.setup(swaggerDocuments))

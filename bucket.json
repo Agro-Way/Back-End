@@ -1,6 +1,6 @@
 [
   {
-    "AllowedOrigins": ["https://agroway-frontend.netlify.app"],
+    "AllowedOrigins": ["http://localhost:3000"],
     "AllowedMethods": ["GET", "PUT"],
     "AllowedHeaders": ["*"]
   }

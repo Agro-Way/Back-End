@@ -17,7 +17,7 @@ export const getCarById = async (
 
     if (!car) {
       return next(
-        new BadRequestException('Car not found', ErrorCode.BAD_REQUEST)
+        new BadRequestException('Carro não encontrado', ErrorCode.BAD_REQUEST)
       )
     }
 
