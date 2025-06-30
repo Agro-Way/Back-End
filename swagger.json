@@ -9,6 +9,16 @@
       "email": "support@agroway.com"
     }
   },
+  "servers": [
+    {
+      "url": "https://agro-way-api.onrender.com",
+      "description": "servidor em produção"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "servidor local para testes"
+    }
+  ],
   "tags": [
     {
       "name": "auth",
@@ -195,6 +205,7 @@
         }
       }
     },
+
     "/api/users": {
       "get": {
         "summary": "users",
@@ -204,8 +215,8 @@
             "BearerAuth": []
           }
         ],
-        "operationId": "users",
-        "tags": ["user"],
+        "operationId": "user",
+        "tags": ["users"],
         "parameters": [
           {
             "in": "query",
@@ -269,7 +280,7 @@
         "summary": "getUser",
         "description": "Obtém um usuário pelo ID",
         "operationId": "getUser",
-        "tags": ["user"],
+        "tags": ["users"],
         "security": [
           {
             "BearerAuth": []
@@ -305,7 +316,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": { "type": "string", "description": "Mensagem de erro" }
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
                   }
                 }
               }
@@ -318,7 +332,188 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": { "type": "string", "description": "Mensagem de erro" }
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/driver": {
+      "post": {
+        "summary": "criar condutores",
+        "description": "adicione os dados do condutor",
+        "operationId": "criar condutor",
+        "tags": ["users"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID do usuário"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "driver_license": {
+                    "type": "string",
+                    "format": "driver_license",
+                    "description": "Carta de condução do condutor"
+                  },
+                  "age": {
+                    "type": "string",
+                    "description": "Idade do condutor"
+                  }
+                },
+                "required": ["driver_license", "age"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Driver"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição mal feita",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cars": {
+      "post": {
+        "summary": "criar carros",
+        "description": "adicione os dados do seu carro",
+        "operationId": "criar condutor",
+        "tags": ["cars"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "brand": {
+                    "type": "string",
+                    "description": "marca do veiculo"
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "modelo do veiculo"
+                  },
+                  "plate": {
+                    "type": "string",
+                    "description": "matricula do veiculo"
+                  },
+                  "driverId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Id do condutor associado ao automovel"
+                  }
+                },
+                "required": ["brand", "model", "plate", "driverId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Carro cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Car"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição mal feita",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
                   }
                 }
               }
@@ -406,6 +601,49 @@
           }
         },
         "required": ["id", "driver_license", "age", "user_id"]
+      },
+      "Car": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID do veiculo"
+          },
+          "brand": {
+            "type": "string",
+            "description": "marca do veiculo"
+          },
+          "model": {
+            "type": "string",
+            "description": "modelo do veiculo"
+          },
+          "plate": {
+            "type": "string",
+            "description": "matricula do veiculo"
+          },
+          "createAt": {
+            "type": "string",
+            "description": "data de criação"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "data de atualização"
+          },
+          "driverId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id do condutor associado ao automovel"
+          }
+        },
+        "required": [
+          "id",
+          "brand",
+          "model",
+          "createAt",
+          "updatedAt",
+          "driverId"
+        ]
       }
     },
     "securitySchemes": {

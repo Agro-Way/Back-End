@@ -12,8 +12,15 @@ export const createProduct = async (
   next: NextFunction
 ) => {
   try {
-    const { name, price, description, quantity, producerId, categoryId } =
-      req.body
+    const {
+      name,
+      price,
+      description,
+      quantity,
+      producerId,
+      categoryId,
+      stock,
+    } = req.body
 
     const producer = await prisma.user.findUnique({
       where: { id: producerId },

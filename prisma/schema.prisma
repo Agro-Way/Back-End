@@ -21,6 +21,7 @@ model User {
   updated_At      DateTime  @updatedAt
   driver          Driver?
   Product         Product[]
+  Order           Order[]
 
   @@map("users")
 }
@@ -67,12 +68,16 @@ model Product {
   quantity    Int
   imageUrl    String
   imagekey    String
-  producerId  String
+  producerId  String   @unique
   producer    User     @relation(fields: [producerId], references: [id])
   created_At  DateTime @default(now())
   updated_At  DateTime @updatedAt
-  categoryId  String
+  categoryId  String   @unique
   category    Category @relation(fields: [categoryId], references: [id])
+
+  Order Order[]
+
+  Stock Stock?
 }
 
 model Category {
@@ -83,4 +88,39 @@ model Category {
   updated_At  DateTime @updatedAt
 
   Product Product[]
+}
+
+model Stock {
+  id         String   @id @default(uuid())
+  productId  String   @unique
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+  created_At DateTime @default(now())
+  updated_At DateTime @updatedAt
+
+  @@map("stocks")
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  userId         String      @unique
+  user           User        @relation(fields: [userId], references: [id])
+  productId      String      @unique
+  product        Product     @relation(fields: [productId], references: [id])
+  quantity       Int
+  totalPrice     Decimal
+  status         OrderStatus @default(PENDENTE)
+  deliverAt      DateTime?
+  delveryAddress String?
+  created_At     DateTime    @default(now())
+  updated_At     DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDENTE
+  ENTREGUE
+  CANCELADO
+  PROCESSANDO
 }
