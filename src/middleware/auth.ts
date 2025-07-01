@@ -17,7 +17,9 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   const token =
-    req.headers.authorization?.split(' ')[1] || (req.query.token as string)
+    req.cookies?.token || // <-- pega o token do cookie
+    req.headers.authorization?.split(' ')[1] ||
+    (req.query.token as string)
   if (!token) {
     next(
       new UnauthorizedException(

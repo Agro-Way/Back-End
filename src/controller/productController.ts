@@ -19,7 +19,6 @@ export const createProduct = async (
       quantity,
       producerId,
       categoryId,
-      stock,
     } = req.body
 
     const producer = await prisma.user.findUnique({
@@ -41,15 +40,20 @@ export const createProduct = async (
         name,
         price: Number.parseFloat(price),
         description,
-        quantity,
         imageUrl: '', // Provide a default or actual image URL
         imagekey: '', // Provide a default or actual image key
+        quantity, // Add quantity directly as required by ProductCreateInput
         producer: {
           connect: { id: producerId },
         },
         category: {
           connect: { id: categoryId },
         },
+        Stock: {
+          create: {
+            quantity
+          }
+        }
       },
     })
     res.status(201).json(product)

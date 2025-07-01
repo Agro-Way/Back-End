@@ -8,6 +8,8 @@ import { ErrorCode } from '../exceptions/root.js'
 import type { NextFunction, Request, Response } from 'express'
 import { BadRequestException } from '../exceptions/bad-request.js'
 import { UserNotFoundException } from '../exceptions/not-found.js'
+import dotenv from 'dotenv'
+dotenv.config()
 
 export const signup = async (
   req: Request,
@@ -63,5 +65,11 @@ export const login = async (req: Request, res: Response) => {
     throw new BadRequestException('Password incorreta', ErrorCode.BAD_REQUEST)
   }
   const token = jwt.sign({ userId: user.id }, JWT_SECRET)
-  res.json({ user, token })
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // deve comparar com 'production', não 'true'
+    sameSite: 'strict', // você escreveu 'stritc' (erro de digitação)
+    maxAge: 3600000, // 1 hora
+  })
 }
