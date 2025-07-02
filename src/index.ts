@@ -17,12 +17,12 @@ const app = express()
 app.use(express.json())
 const PORT = process.env.PORT || 3000
 
-/*app.use(cors({
-  origin: ['passar o caminho do nosso site'], // ou '*'' apenas em dev
+app.use(cors({
+  origin: ['*'], // ou '*'' apenas em dev
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true // se usa cookies/autenticação
 }))
-  */
+  
 
 // segurança
 app.disable('X-powered-by') // remover headers de tecnologia usada, proteção de headers http
