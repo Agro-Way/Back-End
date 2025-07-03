@@ -1,17 +1,17 @@
 import dotenv from 'dotenv'
-import { r2 } from '../config/r2.js'
+import { r2 } from '../../config/r2.js'
 import type { Request, Response, NextFunction } from 'express'
 import { v4 as uuid } from 'uuid'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { BadRequestException } from '../exceptions/bad-request.js'
-import { ErrorCode } from '../exceptions/root.js'
-import { InternalServerError } from '../exceptions/internal-server-error.js'
-import { prisma } from '../utils/prisma.js'
+import { BadRequestException } from '../../exceptions/bad-request.js'
+import { ErrorCode } from '../../exceptions/root.js'
+import { InternalServerError } from '../../exceptions/internal-server-error.js'
+import { prisma } from '../../utils/prisma.js'
 import {
   deleteObjectFromR2,
   generatePreSignedUrl,
-} from '../service/cloudflareService.js'
+} from '../../service/cloudflareService.js'
 
 dotenv.config()
 

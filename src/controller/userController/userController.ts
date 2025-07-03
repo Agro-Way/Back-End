@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from 'express'
-import { prisma } from '../utils/prisma.js'
-import { UserNotFoundException } from '../exceptions/not-found.js'
-import { ErrorCode } from '../exceptions/root.js'
-import { BadRequestException } from '../exceptions/bad-request.js'
+import { prisma } from '../../utils/prisma.js'
+import { UserNotFoundException } from '../../exceptions/not-found.js'
+import { ErrorCode } from '../../exceptions/root.js'
+import { BadRequestException } from '../../exceptions/bad-request.js'
 
 export const getListUsers = async (
   req: Request,

@@ -4,7 +4,7 @@ import {
   getDriverById,
   getListUsers,
   getUserById,
-} from '../controller/userController.js'
+} from '../controller/userController/userController.js'
 import { errorHandler } from '../error-hendler.js'
 import { authMiddleware } from '../middleware/auth.js'
 import { producerMiddleware } from '../middleware/producerMiddleware.js'

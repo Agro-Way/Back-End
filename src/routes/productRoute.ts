@@ -1,10 +1,13 @@
 import { Router } from 'express'
 import { errorHandler } from '../error-hendler.js'
 import { authMiddleware } from '../middleware/auth.js'
-import { uploadImage } from '../controller/uploadImage.js'
-import { estoqueController } from '../controller/estoqueController.js'
+import { uploadImage } from '../controller/productController/uploadImage.js'
+import { estoqueController } from '../controller/stockController/estoqueController.js'
 import { producerMiddleware } from '../middleware/producerMiddleware.js'
-import { createProduct, getProducts } from '../controller/productController.js'
+import {
+  createProduct,
+  getProducts,
+} from '../controller/productController/productController.js'
 
 const productRoute = Router()
 

@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { errorHandler } from '../error-hendler.js'
 import { authMiddleware } from '../middleware/auth.js'
-import { uploadImage } from '../controller/uploadImage.js'
+import { uploadImage } from '../controller//productController/uploadImage.js'
 import { producerMiddleware } from '../middleware/producerMiddleware.js'
 
 const uploadImageRoute = Router()

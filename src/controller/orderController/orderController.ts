@@ -1,4 +1,4 @@
-import { prisma } from '../utils/prisma.js'
+import { prisma } from '../../utils/prisma.js'
 import type { Request, Response, NextFunction } from 'express'
 
 export const createOrder = async (

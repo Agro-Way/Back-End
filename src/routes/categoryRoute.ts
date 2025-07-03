@@ -2,7 +2,7 @@ import { Router } from 'express'
 import {
   createCategory,
   getCategories,
-} from '../controller/categoryController.js'
+} from '../controller/categoryController/categoryController.js'
 import { errorHandler } from '../error-hendler.js'
 import { authMiddleware } from '../middleware/auth.js'
 import { producerMiddleware } from '../middleware/producerMiddleware.js'

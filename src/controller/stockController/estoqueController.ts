@@ -1,7 +1,7 @@
-import { prisma } from '../utils/prisma.js'
-import { ErrorCode } from '../exceptions/root.js'
+import { prisma } from '../../utils/prisma.js'
+import { ErrorCode } from '../../exceptions/root.js'
 import type { Request, Response, NextFunction } from 'express'
-import { BadRequestException } from '../exceptions/bad-request.js'
+import { BadRequestException } from '../../exceptions/bad-request.js'
 
 export const estoqueController = async (
   req: Request,

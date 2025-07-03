@@ -275,7 +275,7 @@
         }
       }
     },
-    "/api/users/{id}": {
+    "/api/users/{userId}": {
       "get": {
         "summary": "getUser",
         "description": "Obtém um usuário pelo ID",
@@ -288,7 +288,7 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
@@ -344,7 +344,7 @@
         }
       }
     },
-    "/api/users/{id}/driver": {
+    "/api/users/{userId}/driver": {
       "post": {
         "summary": "criar condutores",
         "description": "adicione os dados do condutor",

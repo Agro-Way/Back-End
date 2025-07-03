@@ -1,6 +1,6 @@
-import { type NextFunction, type Request, type Response, Router } from 'express'
-import { login } from '../controller/authController.js'
-import { signup } from '../controller/authController.js'
+import { Router } from 'express'
+import { login } from '../controller/authentication/loginController.js'
+import { signup } from '../controller/authentication/registerController.js'
 import { errorHandler } from '../error-hendler.js'
 
 const authRoute: Router = Router()

@@ -1,10 +1,10 @@
 import type { Request, Response, NextFunction } from 'express'
-import { prisma } from '../utils/prisma.js'
-import { productSchema } from '../schema/productSchema.js'
-import { InternalServerError } from '../exceptions/internal-server-error.js'
-import { ErrorCode } from '../exceptions/root.js'
-import { BadRequestException } from '../exceptions/bad-request.js'
-import { Role } from '../../generated/prisma/index.js'
+import { prisma } from '../../utils/prisma.js'
+import { productSchema } from '../../schema/productSchema.js'
+import { InternalServerError } from '../../exceptions/internal-server-error.js'
+import { ErrorCode } from '../../exceptions/root.js'
+import { BadRequestException } from '../../exceptions/bad-request.js'
+import { Role } from '../../../generated/prisma/index.js'
 
 export const createProduct = async (
   req: Request,
@@ -12,14 +12,8 @@ export const createProduct = async (
   next: NextFunction
 ) => {
   try {
-    const {
-      name,
-      price,
-      description,
-      quantity,
-      producerId,
-      categoryId,
-    } = req.body
+    const { name, price, description, quantity, producerId, categoryId } =
+      req.body
 
     const producer = await prisma.user.findUnique({
       where: { id: producerId },
@@ -51,9 +45,9 @@ export const createProduct = async (
         },
         Stock: {
           create: {
-            quantity
-          }
-        }
+            quantity,
+          },
+        },
       },
     })
     res.status(201).json(product)

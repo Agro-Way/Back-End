@@ -17,12 +17,13 @@ const app = express()
 app.use(express.json())
 const PORT = process.env.PORT || 3000
 
-app.use(cors({
-  origin: ['*'], // ou '*'' apenas em dev
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true // se usa cookies/autenticação
-}))
-  
+app.use(
+  cors({
+    origin: '*', // ou '*'' apenas em dev
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, // se usa cookies/autenticação
+  })
+)
 
 // segurança
 app.disable('X-powered-by') // remover headers de tecnologia usada, proteção de headers http
@@ -40,7 +41,7 @@ app.use(cookieParser()) // importando o cookie para enviar e receber
 app.use(morgan('combined'))
 app.use(hpp()) // proteção contra poluição de parâmetro
 
-// redirecionamento de http para https seguro
+// // redirecionamento de http para https seguro
 if (process.env.NODE_ENV === 'production') {
   // Permite detectar HTTPS corretamente atrás de proxy (ex: Heroku, Vercel, Nginx)
   app.set('trust proxy', 1)
@@ -61,10 +62,10 @@ if (process.env.NODE_ENV === 'production') {
 app.use('/api', rootRouter)
 app.use(
   '/api-docs',
-  basicAuth({
-    users: { admin: 'senhaSuperSegura123' },
-    challenge: true,
-  }),
+  // basicAuth({
+  //   users: { admin: 'senhaSuperSegura123' },
+  //   challenge: true,
+  // }),
   SwaggerUi.serve,
   SwaggerUi.setup(swaggerDocuments)
 )

@@ -1,6 +1,5 @@
 import { Router } from 'express'
-import { createCar } from '../controller/carController.js'
-import type { Request, Response, NextFunction } from 'express'
+import { createCar } from '../controller/carController/carController.js'
 import { driverMiddleware } from '../middleware/driverMiddleware.js'
 import { authMiddleware } from '../middleware/auth.js'
 import { errorHandler } from '../error-hendler.js'
