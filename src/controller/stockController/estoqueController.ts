@@ -14,6 +14,24 @@ export const estoqueController = async (
     const estoque = await prisma.stock.findUnique({
       where: { id: productId },
     })
+
+    if (!estoque || estoque.quantity < quantity) {
+      next(
+        new BadRequestException(
+          'Estoque insuficiente ou produto não encontrado',
+          ErrorCode.BAD_REQUEST
+        )
+      )
+    }
+
+    const newStock = await prisma.stock.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        quantity: (estoque?.quantity ?? 0) - quantity,
+      },
+    })
   } catch (error) {
     console.log(error)
     next(

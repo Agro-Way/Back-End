@@ -43,48 +43,14 @@ export const createProduct = async (
         category: {
           connect: { id: categoryId },
         },
-        Stock: {
-          create: {
-            quantity,
-          },
-        },
       },
     })
     res.status(201).json(product)
   } catch (error) {
-    console.error('Erro ao criar produto:', error)
+    console.log('Erro ao criar produto:', error)
     next(
       new InternalServerError(
         'Erro ao criar produto',
-        ErrorCode.INTERNAL_SERVER_ERROR
-      )
-    )
-  }
-}
-
-export const getProducts = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const page = Number.parseInt(req.query.page as string) || 1
-    const limit = Number.parseInt(req.query.limit as string) || 10
-
-    const products = await prisma.product.findMany({
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: {
-        created_At: 'desc',
-      },
-    })
-
-    res.status(200).json(products)
-  } catch (error) {
-    console.log(error)
-    next(
-      new InternalServerError(
-        'Erro ao buscar produtos',
         ErrorCode.INTERNAL_SERVER_ERROR
       )
     )

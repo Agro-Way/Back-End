@@ -13,7 +13,7 @@ export const createOrder = async (
     totalPrice,
     status,
     deliverAt,
-    deliveryAddress,
+    addressId,
   } = req.body
 
   try {
@@ -28,10 +28,13 @@ export const createOrder = async (
         quantity,
         totalPrice,
         status,
-        // deliverAt
-        // deliveryAddress
+        deliverAt,
+        address: {
+          connect: { id: addressId },
+        },
       },
     })
+    res.status(201).json({ createOrder })
   } catch (error) {
     console.error('Error creating order:', error)
     return next(new Error('Failed to create order'))

@@ -9,19 +9,21 @@ datasource db {
 }
 
 model User {
-  id              String    @id @default(uuid())
+  id              String     @id @default(uuid())
   name            String
-  email           String    @unique
+  email           String     @unique
   telefone        String
   password        String
   confirmPassword String
-  status          Status    @default(PENDENTE)
-  role            Role      @default(USUARIO)
-  created_At      DateTime  @default(now())
-  updated_At      DateTime  @updatedAt
+  status          Status     @default(PENDENTE)
+  role            Role       @default(USUARIO)
+  created_At      DateTime   @default(now())
+  updated_At      DateTime   @updatedAt
   driver          Driver?
   Product         Product[]
   Order           Order[]
+  Address         Address[]
+  CartItem        CartItem[]
 
   @@map("users")
 }
@@ -78,6 +80,8 @@ model Product {
   Order Order[]
 
   Stock Stock?
+
+  CartItem CartItem[]
 }
 
 model Category {
@@ -102,18 +106,19 @@ model Stock {
 }
 
 model Order {
-  id             String      @id @default(uuid())
-  userId         String      @unique
-  user           User        @relation(fields: [userId], references: [id])
-  productId      String      @unique
-  product        Product     @relation(fields: [productId], references: [id])
-  quantity       Int
-  totalPrice     Decimal
-  status         OrderStatus @default(PENDENTE)
-  deliverAt      DateTime?
-  delveryAddress String?
-  created_At     DateTime    @default(now())
-  updated_At     DateTime    @updatedAt
+  id         String      @id @default(uuid())
+  userId     String      @unique
+  user       User        @relation(fields: [userId], references: [id])
+  productId  String      @unique
+  product    Product     @relation(fields: [productId], references: [id])
+  quantity   Int
+  totalPrice Decimal
+  status     OrderStatus @default(PENDENTE)
+  deliverAt  DateTime?
+  addressId  String      @unique
+  address    Address     @relation(fields: [addressId], references: [id])
+  created_At DateTime    @default(now())
+  updated_At DateTime    @updatedAt
 
   @@map("orders")
 }
@@ -123,4 +128,29 @@ enum OrderStatus {
   ENTREGUE
   CANCELADO
   PROCESSANDO
+}
+
+model Address {
+  id        String @id @default(uuid())
+  rua       String
+  cidade    String
+  provincia String
+  municipio String
+  userId    String @unique
+  user      User   @relation(fields: [userId], references: [id])
+
+  Order Order[]
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  quantity  Int
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cart_items")
 }
