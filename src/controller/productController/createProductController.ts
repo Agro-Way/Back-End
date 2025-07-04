@@ -17,7 +17,6 @@ export const createProduct = async (
 
     const producer = await prisma.user.findUnique({
       where: { id: producerId },
-      select: { role: true },
     })
 
     if (!producer || producer.role !== Role.PRODUTOR) {
