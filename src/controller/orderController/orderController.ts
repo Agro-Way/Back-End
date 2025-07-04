@@ -16,27 +16,27 @@ export const createOrder = async (
     addressId,
   } = req.body
 
-  try {
-    const createdOrder = await prisma.order.create({
-      data: {
-        user: {
-          connect: { id: userId },
-        },
-        // product: {
-        //   connect: { id: productId },
-        // },
-        // quantity,
-        totalPrice,
-        status,
-        deliverAt,
-        address: {
-          connect: { id: addressId },
-        },
-      },
-    })
-    res.status(201).json({ createOrder })
-  } catch (error) {
-    console.error('Error creating order:', error)
-    return next(new Error('Failed to create order'))
-  }
+  //   cons
+  // try {
+  //   const createdOrder = await prisma.order.create({
+  //     data: {
+  //       user: {
+  //         connect: { id: userId },
+  //       },
+  //       // product: {
+  //       //   connect: { id: productId },
+  //       // },
+  //       // quantity,
+  //       totalPrice,
+  //       status,
+  //       deliverAt,
+  //       address: {
+  //         connect: { id: addressId },
+  //       },
+  //     },
+  //   })
+  //   res.status(201).json({ createOrder })
+  // } catch (error) {ole.error('Error creating order:', error)
+  //   return next(new Error('Failed to create order'))
+  // }
 }
