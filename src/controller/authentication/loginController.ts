@@ -30,7 +30,7 @@ export const login = async (
   }
   const token = jwt.sign({ userId: user.id }, JWT_SECRET)
 
-  res.json({ token })
+  res.json({ token, user })
 }
 
 /*
