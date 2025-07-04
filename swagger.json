@@ -521,6 +521,107 @@
           }
         }
       }
+    },
+    "/api/products": {
+      "post": {
+        "summary": "adicionar produtos",
+        "description": "adicione os dados do produto",
+        "operationId": "adicionar produto",
+        "tags": ["Products"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID da categoria"
+          },
+          {
+            "name": "producerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID do produtor"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "driver_license": {
+                    "type": "string",
+                    "format": "driver_license",
+                    "description": "Carta de condução do condutor"
+                  },
+                  "age": {
+                    "type": "string",
+                    "description": "Idade do condutor"
+                  }
+                },
+                "required": ["driver_license", "age"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Driver"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição mal feita",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -643,6 +744,71 @@
           "createAt",
           "updatedAt",
           "driverId"
+        ]
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID do produto"
+          },
+          "name": {
+            "type": "string",
+            "description": "nome do produto"
+          },
+          "price": {
+            "type": "decimal",
+            "description": "preço do produto"
+          },
+          "description": {
+            "type": "string",
+            "description": "descrição do produto"
+          },
+          "createAt": {
+            "type": "string",
+            "description": "data de criação"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "imagem do produto"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "quantidade do produto"
+          },
+          "imageKey": {
+            "type": "string",
+            "description": "chave da imagem"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "data de atualização"
+          },
+          "producerId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id do produtor associado ao produto"
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID da categoria associada ao produto"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "price",
+          "description",
+          "quantity",
+          "imageUrl",
+          "imageKey",
+          "createAt",
+          "updatedAt",
+          "producerId",
+          "categoryId"
         ]
       }
     },
