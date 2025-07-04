@@ -22,10 +22,10 @@ export const createOrder = async (
         user: {
           connect: { id: userId },
         },
-        product: {
-          connect: { id: productId },
-        },
-        quantity,
+        // product: {
+        //   connect: { id: productId },
+        // },
+        // quantity,
         totalPrice,
         status,
         deliverAt,

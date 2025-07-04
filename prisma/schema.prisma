@@ -77,7 +77,6 @@ model Product {
   categoryId  String   @unique
   category    Category @relation(fields: [categoryId], references: [id])
 
-
   Stock Stock?
 
   CartItem CartItem[]
@@ -110,7 +109,6 @@ model Order {
   id         String      @id @default(uuid())
   userId     String      @unique
   user       User        @relation(fields: [userId], references: [id])
-  quantity   Int
   totalPrice Decimal
   status     OrderStatus @default(PENDENTE)
   deliverAt  DateTime?
@@ -118,12 +116,12 @@ model Order {
   address    Address     @relation(fields: [addressId], references: [id])
   created_At DateTime    @default(now())
   updated_At DateTime    @updatedAt
-  OrderItem OrderItem[]
+  OrderItem  OrderItem[]
 
   @@map("orders")
 }
 
-model OrderItem{
+model OrderItem {
   id        String   @id @default(uuid())
   orderId   String
   order     Order    @relation(fields: [orderId], references: [id])
