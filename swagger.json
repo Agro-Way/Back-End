@@ -533,28 +533,6 @@
             "BearerAuth": []
           }
         ],
-        "parameters": [
-          {
-            "name": "categoryId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "ID da categoria"
-          },
-          {
-            "name": "producerId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "ID do produtor"
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -562,17 +540,46 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "driver_license": {
+                  "name": {
                     "type": "string",
-                    "format": "driver_license",
-                    "description": "Carta de condução do condutor"
+                    "format": "name",
+                    "description": "nome do produto"
                   },
-                  "age": {
+                  "price": {
+                    "type": "decimal",
+                    "description": "preco do produto"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "description": "quantidade do produto"
+                  },
+                  "imageUrl": {
                     "type": "string",
-                    "description": "Idade do condutor"
+                    "description": "imagem do produto"
+                  },
+                  "imageKey": {
+                    "type": "string",
+                    "description": "chave da imagem"
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "description": "ID da categoria associada ao produto"
+                  },
+                  "producerId": {
+                    "type": "string",
+                    "description": "Id do produtor associado ao produto"
                   }
                 },
-                "required": ["driver_license", "age"]
+                "required": [
+                  "name",
+                  "price",
+                  "description",
+                  "quantity",
+                  "categoryId",
+                  "imageKey",
+                  "imageUrl",
+                  "producerId"
+                ]
               }
             }
           }
@@ -583,7 +590,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Driver"
+                  "$ref": "#/components/schemas/Product"
                 }
               }
             }
@@ -622,202 +629,337 @@
           }
         }
       }
-    }
-  },
-  "components": {
-    "schemas": {
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID do usuário"
+    },
+    "/api/Products": {
+      "get": {
+        "summary": "products",
+        "description": "Lista de produtos",
+        "operationId": "product",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "description": "Número da página para paginação"
           },
-          "name": {
-            "type": "string",
-            "description": "Nome do usuário"
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "description": "Email do usuário"
-          },
-          "telefone": {
-            "type": "string",
-            "format": "telefone",
-            "description": "O seu telefone"
-          },
-          "password": {
-            "type": "string",
-            "description": "Senha do usuário"
-          },
-          "confirmPassword": {
-            "type": "string",
-            "description": "Confirmação da senha do usuário"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["ATIVO", "INATIVO", "PENDENTE", "BANIDO"],
-            "description": "Status do usuario"
-          },
-          "role": {
-            "type": "string",
-            "enum": ["USUARIO", "PRODUTOR", "CONDUTOR"],
-            "description": "Papel do usuário"
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Número de produtos por página"
           }
-        },
-        "required": [
-          "id",
-          "name",
-          "email",
-          "telefone",
-          "password",
-          "confirmPassword",
-          "status",
-          "role"
-        ]
-      },
-      "Driver": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID do condutor"
-          },
-          "driver_license": {
-            "type": "string",
-            "description": "Carta de condução do condutor"
-          },
-          "age": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Idade do condutor"
-          },
-          "user_id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID do usuário associado ao condutor"
+        ],
+
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      },
+                      "description": "Lista de produtos"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Total de produtos"
+                    },
+                    "page": {
+                      "type": "integer",
+                      "description": "Número da página atual"
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "description": "Número de produtos por página"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "required": ["id", "driver_license", "age", "user_id"]
-      },
-      "Car": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID do veiculo"
-          },
-          "brand": {
-            "type": "string",
-            "description": "marca do veiculo"
-          },
-          "model": {
-            "type": "string",
-            "description": "modelo do veiculo"
-          },
-          "plate": {
-            "type": "string",
-            "description": "matricula do veiculo"
-          },
-          "createAt": {
-            "type": "string",
-            "description": "data de criação"
-          },
-          "updatedAt": {
-            "type": "string",
-            "description": "data de atualização"
-          },
-          "driverId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Id do condutor associado ao automovel"
-          }
-        },
-        "required": [
-          "id",
-          "brand",
-          "model",
-          "createAt",
-          "updatedAt",
-          "driverId"
-        ]
-      },
-      "Product": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID do produto"
-          },
-          "name": {
-            "type": "string",
-            "description": "nome do produto"
-          },
-          "price": {
-            "type": "decimal",
-            "description": "preço do produto"
-          },
-          "description": {
-            "type": "string",
-            "description": "descrição do produto"
-          },
-          "createAt": {
-            "type": "string",
-            "description": "data de criação"
-          },
-          "imageUrl": {
-            "type": "string",
-            "description": "imagem do produto"
-          },
-          "quantity": {
-            "type": "integer",
-            "description": "quantidade do produto"
-          },
-          "imageKey": {
-            "type": "string",
-            "description": "chave da imagem"
-          },
-          "updatedAt": {
-            "type": "string",
-            "description": "data de atualização"
-          },
-          "producerId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Id do produtor associado ao produto"
-          },
-          "categoryId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID da categoria associada ao produto"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "price",
-          "description",
-          "quantity",
-          "imageUrl",
-          "imageKey",
-          "createAt",
-          "updatedAt",
-          "producerId",
-          "categoryId"
-        ]
+        }
       }
     },
-    "securitySchemes": {
-      "BearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "description": "Token JWT para autenticação"
+    "/api/products/{productId}/upload-url": {
+      "post": {
+        "summary": "gerar url pré assinada",
+        "description": "gerando url pré assinada da imagem",
+        "operationId": "gerar url",
+        "tags": ["Products"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID do do produto"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "adicione o nome do ficheiro"
+                  },
+                  "content-Type": {
+                    "type": "string",
+                    "description": "adicione o tipo de ficheiro"
+                  }
+                },
+                "required": ["filename", "content-Type"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uploadUrl": {
+                      "type": "string",
+                      "description": "url pre assinada"
+                    },
+                    "key": {
+                      "type": "string",
+                      "description": "chave da imagem"
+                    },
+                    "publicUrl": {
+                      "type": "string",
+                      "description": "url publica da imagem"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "User": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID do usuário"
+            },
+            "name": {
+              "type": "string",
+              "description": "Nome do usuário"
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Email do usuário"
+            },
+            "telefone": {
+              "type": "string",
+              "format": "telefone",
+              "description": "O seu telefone"
+            },
+            "password": {
+              "type": "string",
+              "description": "Senha do usuário"
+            },
+            "confirmPassword": {
+              "type": "string",
+              "description": "Confirmação da senha do usuário"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["ATIVO", "INATIVO", "PENDENTE", "BANIDO"],
+              "description": "Status do usuario"
+            },
+            "role": {
+              "type": "string",
+              "enum": ["USUARIO", "PRODUTOR", "CONDUTOR"],
+              "description": "Papel do usuário"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "email",
+            "telefone",
+            "password",
+            "confirmPassword",
+            "status",
+            "role"
+          ]
+        },
+        "Driver": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID do condutor"
+            },
+            "driver_license": {
+              "type": "string",
+              "description": "Carta de condução do condutor"
+            },
+            "age": {
+              "type": "integer",
+              "format": "int32",
+              "description": "Idade do condutor"
+            },
+            "user_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID do usuário associado ao condutor"
+            }
+          },
+          "required": ["id", "driver_license", "age", "user_id"]
+        },
+        "Car": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID do veiculo"
+            },
+            "brand": {
+              "type": "string",
+              "description": "marca do veiculo"
+            },
+            "model": {
+              "type": "string",
+              "description": "modelo do veiculo"
+            },
+            "plate": {
+              "type": "string",
+              "description": "matricula do veiculo"
+            },
+            "createAt": {
+              "type": "string",
+              "description": "data de criação"
+            },
+            "updatedAt": {
+              "type": "string",
+              "description": "data de atualização"
+            },
+            "driverId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Id do condutor associado ao automovel"
+            }
+          },
+          "required": [
+            "id",
+            "brand",
+            "model",
+            "createAt",
+            "updatedAt",
+            "driverId"
+          ]
+        },
+        "Product": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID do produto"
+            },
+            "name": {
+              "type": "string",
+              "description": "nome do produto"
+            },
+            "price": {
+              "type": "decimal",
+              "description": "preço do produto"
+            },
+            "description": {
+              "type": "string",
+              "description": "descrição do produto"
+            },
+            "createAt": {
+              "type": "string",
+              "description": "data de criação"
+            },
+            "imageUrl": {
+              "type": "string",
+              "description": "imagem do produto"
+            },
+            "quantity": {
+              "type": "integer",
+              "description": "quantidade do produto"
+            },
+            "imageKey": {
+              "type": "string",
+              "description": "chave da imagem"
+            },
+            "updatedAt": {
+              "type": "string",
+              "description": "data de atualização"
+            },
+            "producerId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Id do produtor associado ao produto"
+            },
+            "categoryId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID da categoria associada ao produto"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "price",
+            "description",
+            "quantity",
+            "imageUrl",
+            "imageKey",
+            "createAt",
+            "updatedAt",
+            "producerId",
+            "categoryId"
+          ]
+        }
+      },
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT",
+          "description": "Token JWT para autenticação"
+        }
       }
     }
   }
