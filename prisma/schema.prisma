@@ -21,9 +21,9 @@ model User {
   updated_At      DateTime   @updatedAt
   driver          Driver?
   Product         Product[]
-  Order           Order[]
-  Address         Address[]
-  CartItem        CartItem[]
+  // Order           Order[]
+  // Address         Address[]
+  // CartItem        CartItem[]
 
   @@map("users")
 }
@@ -77,11 +77,11 @@ model Product {
   categoryId  String   @unique
   category    Category @relation(fields: [categoryId], references: [id])
 
-  Stock Stock?
+  // Stock Stock?
 
-  CartItem CartItem[]
+  // CartItem CartItem[]
 
-  OrderItem OrderItem[]
+  // OrderItem OrderItem[]
 }
 
 model Category {
@@ -94,73 +94,73 @@ model Category {
   Product Product[]
 }
 
-model Stock {
-  id         String   @id @default(uuid())
-  productId  String   @unique
-  product    Product  @relation(fields: [productId], references: [id])
-  quantity   Int
-  created_At DateTime @default(now())
-  updated_At DateTime @updatedAt
+// model Stock {
+//   id         String   @id @default(uuid())
+//   productId  String   @unique
+//   // product    Product  @relation(fields: [productId], references: [id])
+//   quantity   Int
+//   created_At DateTime @default(now())
+//   updated_At DateTime @updatedAt
 
-  @@map("stocks")
-}
+//   @@map("stocks")
+// }
 
-model Order {
-  id         String      @id @default(uuid())
-  userId     String      @unique
-  user       User        @relation(fields: [userId], references: [id])
-  totalPrice Decimal
-  status     OrderStatus @default(PENDENTE)
-  deliverAt  DateTime?
-  addressId  String      @unique
-  address    Address     @relation(fields: [addressId], references: [id])
-  created_At DateTime    @default(now())
-  updated_At DateTime    @updatedAt
-  OrderItem  OrderItem[]
+// model Order {
+//   id         String      @id @default(uuid())
+//   userId     String      @unique
+//   user       User        @relation(fields: [userId], references: [id])
+//   totalPrice Decimal
+//   status     OrderStatus @default(PENDENTE)
+//   deliverAt  DateTime?
+//   addressId  String      @unique
+//   address    Address     @relation(fields: [addressId], references: [id])
+//   created_At DateTime    @default(now())
+//   updated_At DateTime    @updatedAt
+//   OrderItem  OrderItem[]
 
-  @@map("orders")
-}
+//   @@map("orders")
+// }
 
-model OrderItem {
-  id        String   @id @default(uuid())
-  orderId   String
-  order     Order    @relation(fields: [orderId], references: [id])
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  quantity  Int
-  price     Decimal
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+// model OrderItem {
+//   id        String   @id @default(uuid())
+//   orderId   String
+//   order     Order    @relation(fields: [orderId], references: [id])
+//   productId String
+//   // product   Product  @relation(fields: [productId], references: [id])
+//   quantity  Int
+//   price     Decimal
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
 
-enum OrderStatus {
-  PENDENTE
-  ENTREGUE
-  CANCELADO
-  PROCESSANDO
-}
+// enum OrderStatus {
+//   PENDENTE
+//   ENTREGUE
+//   CANCELADO
+//   PROCESSANDO
+// }
 
-model Address {
-  id        String @id @default(uuid())
-  rua       String
-  cidade    String
-  provincia String
-  municipio String
-  userId    String @unique
-  user      User   @relation(fields: [userId], references: [id])
+// model Address {
+//   id        String @id @default(uuid())
+//   rua       String
+//   cidade    String
+//   provincia String
+//   municipio String
+//   userId    String @unique
+//   user      User   @relation(fields: [userId], references: [id])
 
-  Order Order[]
-}
+//   Order Order[]
+// }
 
-model CartItem {
-  id        String   @id @default(uuid())
-  quantity  Int
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// model CartItem {
+//   id        String   @id @default(uuid())
+//   quantity  Int
+//   userId    String
+//   user      User     @relation(fields: [userId], references: [id])
+//   productId String
+//   // product   Product  @relation(fields: [productId], references: [id])
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-  @@map("cart_items")
-}
+//   @@map("cart_items")
+// }
